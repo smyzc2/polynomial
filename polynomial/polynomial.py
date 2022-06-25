@@ -1,3 +1,5 @@
+from numbers import Number
+
 class Poly:
     def __init__(self,coefs):
 
@@ -20,4 +22,25 @@ class Poly:
           terms += [f"{''if c==1 else c}x^{d}"
                     for d,c in enumerate(coefs[2:],start=2) if c]
 
-          return "+".join(reversed(terms))  or "0"     
+          return "+".join(reversed(terms))  or "0"    
+
+    def __eq__(self, other):      
+
+        return self.coefficients == other.coefficients
+
+    def __add__(self,other):
+         
+        if  isinstance(other,Poly):
+           common = min(self.degree(), other.degree())+1
+
+           coefs = tuple(a+b for a,b in zip(self.coefficients,other.coefficients))
+
+           coefs += self.coefficients[common:] + other.coefficients[common:]
+
+           return Poly(coefs)
+        elif   isinstance(other,Number):
+              return Poly((self.coefficients[0]+ other,)+self.coefficients[1:])
+        else:
+            return NotImplemented
+    def __radd__(self ,other):
+        return self + other         
